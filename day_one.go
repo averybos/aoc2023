@@ -118,10 +118,12 @@ func find_anything_in_lines() {
 		text := fileScanner.Text()
 		for _, str := range allNums {
 
-			// numbers in word form
+			// if we find a number in word form
 			if strings.Contains(text, str.Name) {
+				// what is its index?
 				index := strings.Index(text, str.Name)
 
+				// if there are multiple same words in the line, we need to know their separate starting indices
 				if index != strings.LastIndex(text, str.Name) {
 					last_index := strings.LastIndex(text, str.Name)
 					// append first occurrence
