@@ -23,6 +23,6 @@ func main() {
 		fmt.Print("\n")
 		find_anything_in_lines()
 	case "day2":
-		fmt.Print("day2")
+		parse_each_game()
 	}
 }
