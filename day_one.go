@@ -36,18 +36,23 @@ func (r Num) ValueOf(symbol string) int {
 	return 0
 }
 
-// part one wanted us to simply find the first and last occurrence of a digit in a string
-// ex: txdszrn5eight3cqeight1brqr would be 51
-func find_digits_in_each_line(split []string) []int {
+// go char by char and determine if its an int
+func find_digits_in_each_line(split []string, placements []Placement) ([]int, []Placement) {
 	res := []int{}
+
 	// traverse forwards through list of string chars and stop upon first occurrence of an int
-	for _, i := range split {
+	for index, i := range split {
 
 		num, err := strconv.Atoi(i)
 		if err != nil {
 			continue
 		} else {
 			res = append(res, num)
+			placement := Placement{}
+			placement.Index = index
+			back := strconv.Itoa(num)
+			placement.Word = back
+			placements = append(placements, placement)
 		}
 
 		break
@@ -61,24 +66,34 @@ func find_digits_in_each_line(split []string) []int {
 			continue
 		} else {
 			res = append(res, num)
+			placement := Placement{}
+			placement.Index = len(split) - 1 - index
+			back := strconv.Itoa(num)
+			placement.Word = back
+			placements = append(placements, placement)
 		}
 		break
 	}
-	return res
+	return res, placements
 }
 
+// part one wanted us to simply find the first and last occurrence of a digit in a string
+// ex: txdszrn5eight3cqeight1brqr would be 51
 func find_digits_in_lines() {
 	fileScanner := read_file("day_one_input.txt")
 	fileScanner.Split(bufio.ScanLines)
+
+	// unused in part one
+	var placements = []Placement{}
 
 	bigNumber := 0
 	for fileScanner.Scan() {
 		split := strings.Split(fileScanner.Text(), "")
 
-		res := find_digits_in_each_line(split)
+		result, _ := find_digits_in_each_line(split, placements)
 
 		added := ""
-		for _, number := range res {
+		for _, number := range result {
 			s := strconv.Itoa(number)
 			added = added + s
 		}
@@ -149,35 +164,9 @@ func find_anything_in_lines() {
 		}
 
 		split := strings.Split(fileScanner.Text(), "")
-		for index, i := range split {
+		_, more_placements := find_digits_in_each_line(split, placements)
 
-			num, err := strconv.Atoi(i)
-			if err != nil {
-				continue
-			} else {
-				placement := Placement{}
-				placement.Index = index
-				back := strconv.Itoa(num)
-				placement.Word = back
-				placements = append(placements, placement)
-			}
-
-			break
-		}
-		for index := range split {
-			reverse := len(split) - 1 - index
-			num, err := strconv.Atoi(split[reverse])
-			if err != nil {
-				continue
-			} else {
-				placement := Placement{}
-				placement.Index = len(split) - 1 - index
-				back := strconv.Itoa(num)
-				placement.Word = back
-				placements = append(placements, placement)
-			}
-			break
-		}
+		placements = append(placements, more_placements...)
 
 		// compare indices to see whose first in the string!
 		sort.Slice(placements, func(i, j int) bool {
