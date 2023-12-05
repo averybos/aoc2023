@@ -43,15 +43,15 @@ func find_digits_in_each_line(split []string, placements []Placement) ([]int, []
 	// traverse forwards through list of string chars and stop upon first occurrence of an int
 	for index, i := range split {
 
-		num, err := strconv.Atoi(i)
+		convert_to_num, err := strconv.Atoi(i)
 		if err != nil {
 			continue
 		} else {
-			res = append(res, num)
+			res = append(res, convert_to_num)
 			placement := Placement{}
 			placement.Index = index
-			back := strconv.Itoa(num)
-			placement.Word = back
+			back_to_string := strconv.Itoa(convert_to_num)
+			placement.Word = back_to_string
 			placements = append(placements, placement)
 		}
 
@@ -61,15 +61,15 @@ func find_digits_in_each_line(split []string, placements []Placement) ([]int, []
 	// traverse backwards thru list of string chars and stop upon last occurrence of an int
 	for index := range split {
 		reverse := len(split) - 1 - index
-		num, err := strconv.Atoi(split[reverse])
+		convert_to_num, err := strconv.Atoi(split[reverse])
 		if err != nil {
 			continue
 		} else {
-			res = append(res, num)
+			res = append(res, convert_to_num)
 			placement := Placement{}
 			placement.Index = len(split) - 1 - index
-			back := strconv.Itoa(num)
-			placement.Word = back
+			back_to_string := strconv.Itoa(convert_to_num)
+			placement.Word = back_to_string
 			placements = append(placements, placement)
 		}
 		break
