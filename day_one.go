@@ -91,7 +91,8 @@ func find_digits_in_lines() {
 	fmt.Print(bigNumber)
 }
 
-func append_and_replace(text string, index int, name string) Placement {
+// creates a Placement struct that attaches the index and word
+func create_new_placement(text string, index int, name string) Placement {
 	placement := Placement{}
 	placement.Index = index
 	placement.Word = name
@@ -129,17 +130,19 @@ func find_anything_in_lines() {
 				// what is its starting index?
 				index := strings.Index(text, str.Name)
 
-				// if there are multiple same words in the line, we need to know their separate starting indices
+				// if there are multiple same words in the line, we need to know each of their starting indices
 				if index != strings.LastIndex(text, str.Name) {
 					last_index := strings.LastIndex(text, str.Name)
 					// append first occurrence
-					placement1 := append_and_replace(text, index, str.Name)
+					placement1 := create_new_placement(text, index, str.Name)
 					placements = append(placements, placement1)
 					// append last occurrence, those are all that matter
-					placement2 := append_and_replace(text, last_index, str.Name)
+					placement2 := create_new_placement(text, last_index, str.Name)
 					placements = append(placements, placement2)
+
 				} else {
-					placement := append_and_replace(text, index, str.Name)
+					// if there is only one occurrence of a number in word form
+					placement := create_new_placement(text, index, str.Name)
 					placements = append(placements, placement)
 				}
 			}
