@@ -36,6 +36,8 @@ func (r Num) ValueOf(symbol string) int {
 	return 0
 }
 
+// part one wanted us to simply find the first and last occurrence of a digit in a string
+// ex: txdszrn5eight3cqeight1brqr would be 51
 func find_digits_in_each_line(split []string) []int {
 	res := []int{}
 	// traverse forwards through list of string chars and stop upon first occurrence of an int
@@ -97,10 +99,14 @@ func append_and_replace(text string, index int, name string) Placement {
 	return placement
 }
 
+// part two wanted us to find ints OR words that spelled out numbers
+// example: jvvslnkdk6qnfzjzvseight55eight the number derived would be 68
+// from the first int 6 and the last occurrence of 'eight'
 func find_anything_in_lines() {
 	fileScanner := read_file("day_one_input.txt")
 	fileScanner.Split(bufio.ScanLines)
 
+	// int to its respective word form
 	var allNums = Num{
 		{1, "one"},
 		{2, "two"},
@@ -120,7 +126,7 @@ func find_anything_in_lines() {
 
 			// if we find a number in word form
 			if strings.Contains(text, str.Name) {
-				// what is its index?
+				// what is its starting index?
 				index := strings.Index(text, str.Name)
 
 				// if there are multiple same words in the line, we need to know their separate starting indices
