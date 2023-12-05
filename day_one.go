@@ -9,25 +9,60 @@ import (
 )
 
 type Numbers struct {
+	// an easy way to link int with their english name: 1 = one
 	Integer int
 	Name    string
 }
+
+// an array of Numbers
 type Num []Numbers
 
 type Placement struct {
+	// Placement is a struct that contains the beginning index of a number written out and the word itself
 	Index int
 	Word  string
 }
+
+// an array of Placements
 type Placements []Placement
 
+// get the word, return it's int counterpart
 func (r Num) ValueOf(symbol string) int {
 	for _, s := range r {
 		if s.Name == symbol {
 			return s.Integer
 		}
 	}
-
 	return 0
+}
+
+func find_digits_in_each_line(split []string) []int {
+	res := []int{}
+	// traverse forwards through list of string chars and stop upon first occurrence of an int
+	for _, i := range split {
+
+		num, err := strconv.Atoi(i)
+		if err != nil {
+			continue
+		} else {
+			res = append(res, num)
+		}
+
+		break
+	}
+
+	// traverse backwards thru list of string chars and stop upon last occurrence of an int
+	for index := range split {
+		reverse := len(split) - 1 - index
+		num, err := strconv.Atoi(split[reverse])
+		if err != nil {
+			continue
+		} else {
+			res = append(res, num)
+		}
+		break
+	}
+	return res
 }
 
 func find_digits_in_lines() {
@@ -37,29 +72,8 @@ func find_digits_in_lines() {
 	bigNumber := 0
 	for fileScanner.Scan() {
 		split := strings.Split(fileScanner.Text(), "")
-		res := []int{}
 
-		for _, i := range split {
-
-			num, err := strconv.Atoi(i)
-			if err != nil {
-				continue
-			} else {
-				res = append(res, num)
-			}
-
-			break
-		}
-		for index := range split {
-			reverse := len(split) - 1 - index
-			num, err := strconv.Atoi(split[reverse])
-			if err != nil {
-				continue
-			} else {
-				res = append(res, num)
-			}
-			break
-		}
+		res := find_digits_in_each_line(split)
 
 		added := ""
 		for _, number := range res {
@@ -71,6 +85,7 @@ func find_digits_in_lines() {
 		bigNumber = back + bigNumber
 	}
 
+	// part one result
 	fmt.Print(bigNumber)
 }
 
@@ -153,7 +168,7 @@ func find_anything_in_lines() {
 			break
 		}
 
-		// compare indices to see whose first!
+		// compare indices to see whose first in the string!
 		sort.Slice(placements, func(i, j int) bool {
 			return placements[i].Index < placements[j].Index
 		})
@@ -174,5 +189,6 @@ func find_anything_in_lines() {
 		back_to_int, _ := strconv.Atoi(add)
 		bigNum = bigNum + back_to_int
 	}
+	// part two result
 	fmt.Print(bigNum)
 }
