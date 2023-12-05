@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -32,12 +31,7 @@ func (r Num) ValueOf(symbol string) int {
 }
 
 func find_digits_in_lines() {
-	readFile, err := os.Open("day_one_input.txt")
-
-	if err != nil {
-		fmt.Println(err)
-	}
-	fileScanner := bufio.NewScanner(readFile)
+	fileScanner := read_file("day_one_input.txt")
 	fileScanner.Split(bufio.ScanLines)
 
 	bigNumber := 0
@@ -78,7 +72,6 @@ func find_digits_in_lines() {
 	}
 
 	fmt.Print(bigNumber)
-	readFile.Close()
 }
 
 func append_and_replace(text string, index int, name string) Placement {
@@ -90,12 +83,7 @@ func append_and_replace(text string, index int, name string) Placement {
 }
 
 func find_anything_in_lines() {
-	readFile, err := os.Open("day_one_input.txt")
-
-	if err != nil {
-		fmt.Println(err)
-	}
-	fileScanner := bufio.NewScanner(readFile)
+	fileScanner := read_file("day_one_input.txt")
 	fileScanner.Split(bufio.ScanLines)
 
 	var allNums = Num{
@@ -187,5 +175,4 @@ func find_anything_in_lines() {
 		bigNum = bigNum + back_to_int
 	}
 	fmt.Print(bigNum)
-	readFile.Close()
 }

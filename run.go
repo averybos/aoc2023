@@ -1,9 +1,20 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 )
+
+func read_file(txt_file_name string) *bufio.Scanner {
+	readFile, err := os.Open(txt_file_name)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	fileScanner := bufio.NewScanner(readFile)
+	return fileScanner
+}
 
 func main() {
 	switch os.Args[1] {
