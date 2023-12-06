@@ -26,5 +26,7 @@ func main() {
 		determine_players()
 		fmt.Print("\n")
 		determine_least_amount_of_cubes()
+	case "day3":
+		determine_part_numbers()
 	}
 }
