@@ -23,6 +23,8 @@ func main() {
 		fmt.Print("\n")
 		find_anything_in_lines()
 	case "day2":
-		parse_each_game()
+		determine_players()
+		fmt.Print("\n")
+		determine_least_amount_of_cubes()
 	}
 }
