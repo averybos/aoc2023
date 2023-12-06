@@ -27,6 +27,7 @@ func main() {
 		fmt.Print("\n")
 		determine_least_amount_of_cubes()
 	case "day3":
-		determine_part_numbers()
+		fileScanner := read_file("day_three_input.txt")
+		determine_part_numbers(fileScanner)
 	}
 }

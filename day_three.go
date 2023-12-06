@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"fmt"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -21,33 +21,45 @@ type Number struct {
 
 // an array of chars and their indices
 type Symbols []Symbol
-type PotentialParts []Number
+type Parts []Number
 
 // use indices here, if its an index that is -1:+1 on top or below a number, it counts, as well as right next to it on the same line
-func determine_part_numbers() {
-	fileScanner := read_file("day_three_input.txt")
-	fileScanner.Split(bufio.ScanLines)
+func determine_part_numbers(file *bufio.Scanner) {
+
+	var final_confirmed_parts = Parts{}
+
+	file.Split(bufio.ScanLines)
 
 	// var symbols_to_compare = Symbols{}
-	// var numbers_to_compare = NumberOrSymbols{}
+	// var numbers_to_compare = Numbers{}
 
-	for fileScanner.Scan() {
+	for file.Scan() {
 
-		text := fileScanner.Text()
+		text := file.Text()
 		each_char := strings.Split(text, "")
 
 		var symbols = Symbols{}
-		var numbers = PotentialParts{}
+		var numbers = Parts{}
 
 		for index, chars := range each_char {
 
 			// first gotta check if we have captured a number previously
 			// because we don't want to repeat digits here
-			// ex: 418 and then capturing 18
-			if index > 0 && len(numbers) != 0 {
-				_, err := strconv.Atoi(each_char[index-1])
-				if err == nil {
-					continue
+			// example of the bad: actual number=418 -> and then capturing 18 and then 8
+			if index > 1 && len(numbers) != 0 {
+				_, err1 := strconv.Atoi(chars)
+				_, err2 := strconv.Atoi(each_char[index-1])
+
+				if err2 == nil {
+					// check for the case where a symbol is directly after a number
+					if err1 != nil {
+						if each_char[index] == "." {
+							continue
+						}
+
+					} else {
+						continue
+					}
 				}
 			}
 
@@ -84,8 +96,21 @@ func determine_part_numbers() {
 			}
 		}
 
-		fmt.Print(symbols, numbers)
-		fmt.Print("\n")
+		// fmt.Print(symbols, numbers)
+		// fmt.Print("\n")
+
+		// are there any symbols directly to the left or right of any number?
+		for _, symbol := range symbols {
+			for _, num := range numbers {
+				potential_adjacents_left := float64(symbol.Index - num.StartingIndex)
+				potential_adjacents_right := float64((num.StartingIndex + num.Length - 1) - symbol.Index)
+
+				if math.Abs(potential_adjacents_left) == 1 || math.Abs(potential_adjacents_right) == 1 {
+					final_confirmed_parts = append(final_confirmed_parts, num)
+				}
+			}
+		}
+		// begin comparing previous symbol indices with the current number index range
 	}
 
 }
