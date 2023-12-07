@@ -109,7 +109,7 @@ func determine_part_and_symbol_placements(lines []string) EverySymbolAndPart {
 		}
 		all_symbols = append(all_symbols, symbols)
 		all_parts = append(all_parts, numbers)
-
+		fmt.Print(symbols, "\n")
 	}
 	var symbols_and_parts_all_lines = EverySymbolAndPart{
 		AllSymbols: all_symbols,
