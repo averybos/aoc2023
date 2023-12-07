@@ -17,6 +17,7 @@ type Number struct {
 	StartingIndex int
 	Number        string
 	Length        int
+	LineNumber    int
 }
 
 // an array of chars and their indices
@@ -31,9 +32,11 @@ type EverySymbolAndPart struct {
 	AllParts   allParts
 }
 
-func structInSlice(a Number, b Parts) bool {
+// this function will be run before a part is detected to be adjacent
+// to a symbol to ensure no duplicates
+func isStructInSlice(a Number, b Parts) bool {
 	for _, b := range b {
-		if b.StartingIndex == a.StartingIndex && b.Number == a.Number {
+		if b.StartingIndex == a.StartingIndex && b.Number == a.Number && b.LineNumber == a.LineNumber {
 			return true
 		}
 	}
@@ -46,7 +49,7 @@ func determine_part_and_symbol_placements(lines []string) EverySymbolAndPart {
 	var all_symbols = allSymbols{}
 	var all_parts = allParts{}
 
-	for _, line := range lines {
+	for i, line := range lines {
 
 		each_char := strings.Split(line, "")
 
@@ -103,13 +106,13 @@ func determine_part_and_symbol_placements(lines []string) EverySymbolAndPart {
 					StartingIndex: index,
 					Number:        number,
 					Length:        len(number),
+					LineNumber:    i,
 				}
 				numbers = append(numbers, number_struct)
 			}
 		}
 		all_symbols = append(all_symbols, symbols)
 		all_parts = append(all_parts, numbers)
-		fmt.Print(symbols, "\n")
 	}
 	var symbols_and_parts_all_lines = EverySymbolAndPart{
 		AllSymbols: all_symbols,
@@ -122,12 +125,12 @@ func get_above_or_below_adjacents(symbols Symbols, numbers Number, final_confirm
 	for _, outer := range symbols {
 		potential_adjacents_left := float64(numbers.StartingIndex - outer.Index)
 		potential_adjacents_right := float64((numbers.StartingIndex + numbers.Length - 1) - outer.Index)
-		// checks for diagonals, aligned with the
+		// checks for diagonals or aligned with the first or last digit
 		if math.Abs(potential_adjacents_left) == 1 ||
 			math.Abs(potential_adjacents_right) == 1 ||
 			outer.Index == numbers.StartingIndex ||
-			outer.Index == (numbers.StartingIndex+numbers.Length-1) {
-			if !structInSlice(numbers, final_confirmed_parts) {
+			outer.Index == (numbers.StartingIndex+(numbers.Length-1)) {
+			if !isStructInSlice(numbers, final_confirmed_parts) {
 				final_confirmed_parts = append(final_confirmed_parts, numbers)
 			}
 		}
@@ -159,7 +162,7 @@ func determine_if_a_real_part(all_items EverySymbolAndPart) {
 				potential_adjacents_right := float64((numbers.StartingIndex + numbers.Length - 1) - symbol.Index)
 
 				if math.Abs(potential_adjacents_left) == 1 || math.Abs(potential_adjacents_right) == 1 {
-					if !structInSlice(numbers, final_confirmed_parts) {
+					if !isStructInSlice(numbers, final_confirmed_parts) {
 						final_confirmed_parts = append(final_confirmed_parts, numbers)
 					}
 				}

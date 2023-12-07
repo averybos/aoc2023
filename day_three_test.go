@@ -24,7 +24,7 @@ func test() {
 		},
 	}
 
-	answer := structInSlice(n, p)
+	answer := isStructInSlice(n, p)
 	fmt.Print(answer)
 }
 func TestDeterminingParts(t *testing.T) {
