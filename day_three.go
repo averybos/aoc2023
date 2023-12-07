@@ -173,7 +173,6 @@ func determine_if_a_real_part(all_items EverySymbolAndPart) {
 		}
 
 	}
-	fmt.Print(len(final_confirmed_parts), "\n")
 	fmt.Print(final_confirmed_parts, "\n")
 	bigNum := 0
 	for _, n := range final_confirmed_parts {
