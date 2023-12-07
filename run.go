@@ -16,6 +16,16 @@ func read_file(txt_file_name string) *bufio.Scanner {
 	return fileScanner
 }
 
+func place_text_into_array(file *bufio.Scanner) []string {
+	file.Split(bufio.ScanLines)
+	result := []string{}
+	for file.Scan() {
+		text := file.Text()
+		result = append(result, text)
+	}
+	return result
+}
+
 func main() {
 	switch os.Args[1] {
 	case "day1":
@@ -28,6 +38,8 @@ func main() {
 		determine_least_amount_of_cubes()
 	case "day3":
 		fileScanner := read_file("day_three_input.txt")
-		determine_part_numbers(fileScanner)
+		text := place_text_into_array(fileScanner)
+		everything := determine_part_and_symbol_placements(text)
+		determine_if_a_real_part(everything)
 	}
 }
