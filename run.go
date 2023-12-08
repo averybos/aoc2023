@@ -41,5 +41,9 @@ func main() {
 		text := place_text_into_array(fileScanner)
 		everything := determine_part_and_symbol_placements(text)
 		determine_if_a_real_part(everything)
+	case "day4":
+		fileScanner := read_file("day_four_input.txt")
+		text := place_text_into_array(fileScanner)
+		find_the_winners(text)
 	}
 }

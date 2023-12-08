@@ -24,7 +24,7 @@ func test() {
 		},
 	}
 
-	answer := isStructInSlice(n, p)
+	answer := isStructInParts(n, p)
 	fmt.Print(answer)
 }
 func TestDeterminingParts(t *testing.T) {
@@ -34,4 +34,11 @@ func TestDeterminingParts(t *testing.T) {
 	everything := determine_part_and_symbol_placements(text)
 	determine_if_a_real_part(everything)
 	test()
+}
+
+func TestFindWinningNumbers(t *testing.T) {
+
+	fileScanner := read_file("day_four_input_test.txt")
+	text := place_text_into_array(fileScanner)
+	find_the_winners(text)
 }
