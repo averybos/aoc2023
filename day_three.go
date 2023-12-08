@@ -9,8 +9,9 @@ import (
 
 // a symbol and its index
 type Symbol struct {
-	Index  int
-	Symbol string
+	Index     int
+	Symbol    string
+	Adjacents []Number
 }
 
 type Number struct {
@@ -34,12 +35,22 @@ type EverySymbolAndPart struct {
 
 // this function will be run before a part is detected to be adjacent
 // to a symbol to ensure no duplicates
-func isStructInSlice(a Number, b Parts) bool {
+func isStructInParts(a Number, b Parts) bool {
 	for _, b := range b {
 		if b.StartingIndex == a.StartingIndex && b.Number == a.Number && b.LineNumber == a.LineNumber {
 			return true
 		}
 	}
+	return false
+}
+
+func isStructInSymbolArray(a Number, b Symbol) bool {
+	for _, i := range b.Adjacents {
+		if i.StartingIndex == a.StartingIndex && i.Number == a.Number && i.LineNumber == a.LineNumber {
+			return true
+		}
+	}
+
 	return false
 }
 
@@ -85,8 +96,9 @@ func determine_part_and_symbol_placements(lines []string) EverySymbolAndPart {
 					continue
 				} else {
 					var symbol_struct = Symbol{
-						Index:  index,
-						Symbol: chars,
+						Index:     index,
+						Symbol:    chars,
+						Adjacents: []Number{},
 					}
 					symbols = append(symbols, symbol_struct)
 				}
@@ -122,7 +134,7 @@ func determine_part_and_symbol_placements(lines []string) EverySymbolAndPart {
 }
 
 func get_above_or_below_adjacents(symbols Symbols, numbers Number, final_confirmed_parts Parts) Parts {
-	for _, outer := range symbols {
+	for i, outer := range symbols {
 		potential_adjacents_left := float64(numbers.StartingIndex - outer.Index)
 		potential_adjacents_right := float64((numbers.StartingIndex + numbers.Length - 1) - outer.Index)
 		// checks for diagonals or aligned with the first or last digit
@@ -130,7 +142,10 @@ func get_above_or_below_adjacents(symbols Symbols, numbers Number, final_confirm
 			math.Abs(potential_adjacents_right) == 1 ||
 			outer.Index == numbers.StartingIndex ||
 			outer.Index == (numbers.StartingIndex+(numbers.Length-1)) {
-			if !isStructInSlice(numbers, final_confirmed_parts) {
+			if !isStructInSymbolArray(numbers, outer) {
+				symbols[i].Adjacents = append(outer.Adjacents, numbers)
+			}
+			if !isStructInParts(numbers, final_confirmed_parts) {
 				final_confirmed_parts = append(final_confirmed_parts, numbers)
 			}
 		}
@@ -157,12 +172,15 @@ func determine_if_a_real_part(all_items EverySymbolAndPart) {
 
 		// check for directly adjacent symbols in the same line
 		for _, numbers := range outer {
-			for _, symbol := range same_line_symbols {
+			for i, symbol := range same_line_symbols {
 				potential_adjacents_left := float64(symbol.Index - numbers.StartingIndex)
 				potential_adjacents_right := float64((numbers.StartingIndex + numbers.Length - 1) - symbol.Index)
 
 				if math.Abs(potential_adjacents_left) == 1 || math.Abs(potential_adjacents_right) == 1 {
-					if !isStructInSlice(numbers, final_confirmed_parts) {
+					if !isStructInSymbolArray(numbers, symbol) {
+						same_line_symbols[i].Adjacents = append(symbol.Adjacents, numbers)
+					}
+					if !isStructInParts(numbers, final_confirmed_parts) {
 						final_confirmed_parts = append(final_confirmed_parts, numbers)
 					}
 				}
@@ -176,11 +194,30 @@ func determine_if_a_real_part(all_items EverySymbolAndPart) {
 		}
 
 	}
-	fmt.Print(final_confirmed_parts, "\n")
+	// part 2
+	sum_of_gear_ratios := 0
+	for _, i := range all_items.AllSymbols {
+		for _, j := range i {
+			if j.Symbol == "*" {
+				if len(j.Adjacents) == 2 {
+					convert1, _ := strconv.Atoi(j.Adjacents[0].Number)
+					convert2, _ := strconv.Atoi(j.Adjacents[1].Number)
+					gear_ratio := convert1 * convert2
+					sum_of_gear_ratios = sum_of_gear_ratios + gear_ratio
+				} else {
+					continue
+				}
+			} else {
+				continue
+			}
+		}
+	}
+	// fmt.Print(final_confirmed_parts, "\n")
 	bigNum := 0
 	for _, n := range final_confirmed_parts {
 		convert, _ := strconv.Atoi(n.Number)
 		bigNum = bigNum + convert
 	}
-	fmt.Print(bigNum)
+	fmt.Print("part1 ", bigNum, "\n")
+	fmt.Print("part2 ", sum_of_gear_ratios)
 }
