@@ -92,6 +92,9 @@ func find_the_winners(lines []string) {
 
 	}
 	all_copies := 0
+	for _, i := range all_matches {
+		all_copies = all_copies + i.extra_copies + 1
+	}
 	fmt.Print("part1 ", final_number, "\n")
 	fmt.Print("part2 ", all_copies)
 }
